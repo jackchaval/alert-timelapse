@@ -1,0 +1,7 @@
+{
+    "username": "ericsmith@byu.net",
+    "password": "video.1",
+    "mac": "00-12-AB-17-CB-D7",
+    "logfile": "~/alert-timelapse/log.txt",
+    "output": "~/alert-timelapse/snapshots"
+}
