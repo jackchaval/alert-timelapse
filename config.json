@@ -1,7 +1,9 @@
 {
-    "username": "my email address",
-    "password": "my password",
-    "mac": "00-12-AB-17-CB-D7",
+    "username": "Email address",
+    "password": "Password",
+    "mac": "Camera MAC address, like 00-12-AB-CD-EF-00",
     "logfile": "~/alert-timelapse/log.txt",
-    "output": "~/alert-timelapse/snapshots"
+    "output": "~/alert-timelapse/snapshots",
+    "start": "Optional daily start time, in 24 hour format, like 09:30",
+    "stop": "Optional daily stop time, in 24 hour format, like 14:30"
 }

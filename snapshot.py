@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2014 Eric Smith
-from datetime import datetime
+from datetime import datetime, timedelta
 from xml.sax.saxutils import escape
 import logging
 import os
-import requests
 import time
 import sys
+
+import requests
+
 from config import Config
 import log
+
 
 URL_BASE = 'https://alert.logitech.com/services'
 PERIOD_SECONDS = 10  # 60
@@ -27,7 +30,7 @@ def main():
     if token:
         headers = {'X-Authorization': token}
         url = URL_BASE + '/camera2.svc/{}/snapshotviewable'.format(config.mac)
-        snapshot_loop(url, headers, config.output)
+        snapshot_loop(url, headers, config)
 
 
 def load_config():
@@ -35,7 +38,15 @@ def load_config():
     config = Config(config_file)
     config.logfile = os.path.expanduser(config.logfile)
     config.output = os.path.expanduser(config.output)
+    config.start_time = parse_time(config.get('start'))
+    config.stop_time = parse_time(config.get('stop'))
     return config
+
+
+def parse_time(time_str):
+    if time_str:
+        return datetime.strptime(time_str, '%H:%M').time()
+    return None
 
 
 def setup_directories(config):
@@ -61,11 +72,11 @@ def authenticate(username, password):
         logger.error('Authentication failed - ' + str(response))
 
 
-def snapshot_loop(url, headers, output):
+def snapshot_loop(url, headers, config):
     while True:
-        filename = get_filename(output)
+        time.sleep(get_sleep_time(config))
+        filename = get_filename(config.output)
         download(url, filename, headers)
-        time.sleep(PERIOD_SECONDS)
 
 
 def get_filename(output):
@@ -107,6 +118,30 @@ def download(url, filename, headers):
                 handle.write(block)
         else:
             logger.error('Download failed - ' + str(response))
+
+
+def get_sleep_time(config):
+    delta = timedelta(seconds=PERIOD_SECONDS)
+    if config.start_time and config.stop_time:
+        now = datetime.now()
+        start_today = time_today(now, config.start_time)
+        stop_today = time_today(now, config.stop_time)
+        start_tomorrow = time_tomorrow(now, config.start_time)
+        if now < start_today:
+            delta = start_today - now
+        elif now > stop_today:
+            delta = start_tomorrow - now
+        if delta.total_seconds() > PERIOD_SECONDS:
+            logger.info('Sleeping {} to next start time.'.format(delta))
+    return delta.total_seconds()
+
+
+def time_today(now, t):
+    return datetime(now.year, now.month, now.day, t.hour, t.minute)
+
+
+def time_tomorrow(now, t):
+    return time_today(now, t) + timedelta(days=1)
 
 
 if __name__ == '__main__':
