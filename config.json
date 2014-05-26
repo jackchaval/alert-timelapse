@@ -3,7 +3,7 @@
     "password": "Password",
     "mac": "Camera MAC address, like 00-12-AB-CD-EF-00",
     "logfile": "~/alert-timelapse/log.txt",
-    "output": "~/alert-timelapse/snapshots",
+    "output": "~/alert-timelapse",
     "start": "Optional daily start time, in 24 hour format, like 09:30",
     "stop": "Optional daily stop time, in 24 hour format, like 14:30"
 }

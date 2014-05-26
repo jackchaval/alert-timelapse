@@ -37,7 +37,7 @@ def load_config():
     config_file = sys.argv[1] if len(sys.argv) > 1 else 'config.json'
     config = Config(config_file)
     config.logfile = os.path.expanduser(config.logfile)
-    config.output = os.path.expanduser(config.output)
+    config.output = os.path.join(os.path.expanduser(config.output), 'snapshot')
     config.start_time = parse_time(config.get('start'))
     config.stop_time = parse_time(config.get('stop'))
     return config
