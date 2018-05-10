@@ -26,7 +26,7 @@ def main():
     setup_directories(config)
     log.setup_stdout(logging.INFO)
     log.setup_file(config.logfile, logging.DEBUG)
-    token = authenticate(config.username, config.password)
+    token = authenticate(config.vampvegan644@gmail.com, config.0000)
     if token:
         headers = {'X-Authorization': token}
         url = URL_BASE + '/camera2.svc/{}/snapshotviewable'.format(config.mac)
